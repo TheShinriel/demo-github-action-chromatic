@@ -1,0 +1,31 @@
+# Visiter https://www.chromatic.com/docs/setup pour configurer Chromatic
+
+# Nom du workflow
+name: "Chromatic"
+
+# Ce workflow se lancera uniquement si un fichier dans le dossier src/stories/ est modifié
+# On ignore donc les configurations du projet, les assets, ...
+on:
+  pull_request:
+    paths:
+      - "src/stories/**"
+
+jobs:
+  chromatic-deployment:
+    # Operating System
+    runs-on: ubuntu-latest
+    # Job steps
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm install
+
+        # On exécute l'action de chromatic
+      - name: Publish to Chromatic
+        uses: chromaui/action@v1
+        with:
+          # On doit spécifié le token de notre projet chromatic
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
